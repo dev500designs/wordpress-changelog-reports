@@ -3,7 +3,7 @@
 Plugin Name: Changelog CSV
 Plugin URI: https://500designs.com/
 Description: This is a simple plugin to display the changelogs of all installed plugins.
-Version: 1.0
+Version: 1.1
 Author: Mauro Carrera
 Author URI: https://500designs.com/
 License: GPL2
