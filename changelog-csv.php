@@ -15,8 +15,10 @@ add_action('admin_menu', 'wp_plugin_changelog_add_pages');
 // Action function for above hook
 function wp_plugin_changelog_add_pages() {
     // enqueue the scripts and styles in the admin pages
-    add_action( 'admin_enqueue_scripts', 'enqueue_admin_scripts_and_styles' );
+    
+        add_action( 'admin_enqueue_scripts', 'enqueue_admin_scripts_and_styles' );
 
+    
     add_menu_page(__('Changelog CSV','menu-test'), __('Changelog CSV','menu-test'), 'manage_options', 'changelog-report', 'wp_plugin_changelog_output' );
 }
 
@@ -206,37 +208,38 @@ function wp_plugin_changelog_output() {
     </script>";
 }
 
-echo '
-<script>
-window.addEventListener("DOMContentLoaded", (event) => {
-    var links = document.querySelectorAll("#changelog-table a");
-    for (var i = 0; i < links.length; i++) {
-        links[i].target = "_blank";
-    }
-});
-</script>
-';
-
 // Enqueue scripts and styles
-function enqueue_admin_scripts_and_styles() {
+function enqueue_admin_scripts_and_styles($hook) {
+    global $pagenow;
+
+    // Add conditions to check if it's a specific page or post type or Elementor editor
+    if (is_singular('custom-post-type') || isset($_GET['elementor-preview'])) {
+        return;
+    }
+
+    if ($pagenow == 'post.php' || $pagenow == 'post-new.php' || ($hook != 'plugins.php' && $hook != 'toplevel_page_changelog-report')) {
+        return;
+    }
+
     // include DataTables CSS
     wp_enqueue_style('datatables-css', 'https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css', array(), null);
 
     // include DataTables Responsive CSS
     wp_enqueue_style('datatables-responsive-css', 'https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css', array(), null);
 
-    // include jQuery
-    wp_enqueue_script('jquery');
+     
 
     // include DataTables JS
     wp_enqueue_script('datatables-js', 'https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js', array('jquery'), null, true);
 
     // include DataTables Responsive JS
     wp_enqueue_script('datatables-responsive-js', 'https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js', array('jquery', 'datatables-js'), null, true);
-}
 
     // include jsPDF and html2canvas
     wp_enqueue_script('html2canvas', 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js', array(), null, true);
-   
+}
+
+add_action('admin_enqueue_scripts', 'enqueue_admin_scripts_and_styles');
+
 
 ?>
