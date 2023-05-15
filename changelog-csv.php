@@ -97,7 +97,21 @@ function wp_plugin_changelog_output() {
         jQuery(document).ready(function() {
             jQuery('#changelog-table').DataTable({
                 responsive: true,
-                
+    paging: true,
+    info: false,
+    searching: true,
+    ordering: true,
+    order: [[ 0, 'asc' ]],
+    lengthMenu: [[25, 50, 100], [25, 50, 100]],
+    pageLength: 25,
+     columns: [
+        { title: 'Plugin Name' },
+        { title: 'Current Version' },
+        { title: 'Latest Version' },
+        { title: 'Changelog Details' },
+    ],  
+      stateSave: true,
+    
             });
         });
     </script>";
