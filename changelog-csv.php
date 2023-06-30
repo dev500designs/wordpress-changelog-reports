@@ -43,18 +43,20 @@ function wp_plugin_changelog_output() {
     echo '<thead><tr><th>Name</th><th>Current Version</th><th>Latest Version</th><th>Changelog</th></tr></thead><tbody>';
 
     // Loop through each plugin
-    foreach ($all_plugins as $plugin_file => $plugin_data) {
-        $plugin_slug = dirname($plugin_file);
-        $api = plugins_api('plugin_information', array(
-            'slug' => $plugin_slug,
-            'fields' => array(
-                'sections' => true,
-            ),
-        ));
-        $latest_version = 'Up to date.';
-        if (!is_wp_error($api)) {
-            $latest_version = $api->version;
+foreach ($all_plugins as $plugin_file => $plugin_data) {
+    $plugin_slug = dirname($plugin_file);
+    $api = plugins_api('plugin_information', array(
+        'slug' => $plugin_slug,
+        'fields' => array(
+            'sections' => true,
+        ),
+    ));
+    $latest_version = 'Up to date.';
+    if (!is_wp_error($api)) {
+        $latest_version = $api->version;
 
+        // Check if the changelog section is not empty
+        if (!empty($api->sections['changelog'])) {
             // Create a new DOMDocument instance
             $dom = new DOMDocument();
             // Load the HTML
@@ -76,6 +78,9 @@ function wp_plugin_changelog_output() {
         } else {
             $changelog = 'Changelog not available.';
         }
+    } else {
+        $changelog = 'Changelog not available.';
+    }
         echo '<tr' . ($latest_version == 'Up to date.' ? ' class="up-to-date"' : '') . '>';
         echo '<td>' . esc_html($plugin_data['Name']) . '</td>';
         echo '<td>' . esc_html($plugin_data['Version']) . '</td>';
