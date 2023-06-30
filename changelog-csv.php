@@ -81,13 +81,20 @@ foreach ($all_plugins as $plugin_file => $plugin_data) {
     } else {
         $changelog = 'Changelog not available.';
     }
-        echo '<tr' . ($latest_version == 'Up to date.' ? ' class="up-to-date"' : '') . '>';
-        echo '<td>' . esc_html($plugin_data['Name']) . '</td>';
-        echo '<td>' . esc_html($plugin_data['Version']) . '</td>';
-        echo '<td>' . esc_html($latest_version) . '</td>';
-                echo '<td>' . wp_kses_post($changelog) . '</td>';
-        echo '</tr>';
+
+    // Skip the plugin if the current version is the same as the latest version
+    if ($plugin_data['Version'] == $latest_version) {
+        continue;
     }
+
+    echo '<tr' . ($latest_version == 'Up to date.' ? ' class="up-to-date"' : '') . '>';
+    echo '<td>' . esc_html($plugin_data['Name']) . '</td>';
+    echo '<td>' . esc_html($plugin_data['Version']) . '</td>';
+    echo '<td>' . esc_html($latest_version) . '</td>';
+    echo '<td>' . wp_kses_post($changelog) . '</td>';
+    echo '</tr>';
+}
+
 
     // Close the table
     echo '</tbody></table>';
